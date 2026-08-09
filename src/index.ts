@@ -47,18 +47,18 @@ export function etag(options: ETagOptions = {}) {
 				}
 			} satisfies ETagContextApi
 		})
-		.onAfterHandle(async (ctx) => {
-			const { request, set, response } = ctx
+		.afterHandle(async (ctx) => {
+			const { request, set, responseValue } = ctx
 			let etag = set.headers['etag']
 
 			if (!etag) {
 				let toHash: Bun.StringOrBuffer | undefined
 
-				if (canBeHashed(response)) {
-					toHash = response
+				if (canBeHashed(responseValue)) {
+					toHash = responseValue
 				} else {
 					if (typeof serialize === 'function') {
-						toHash = await serialize(response)
+						toHash = await serialize(responseValue)
 					}
 					if (typeof toHash === 'undefined') {
 						return
@@ -80,8 +80,7 @@ export function etag(options: ETagOptions = {}) {
 						break
 				}
 
-				// @ts-ignore
-				ctx.response = null
+				return null
 			}
 		})
 		.as('global')

@@ -1,5 +1,6 @@
 import type { SupportedCryptoAlgorithms } from 'bun'
-import type { MaybePromise } from 'elysia'
+
+type MaybePromise<T> = T | Promise<T>
 
 export type ETagOptions = {
 	/**
